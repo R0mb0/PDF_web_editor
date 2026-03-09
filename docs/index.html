@@ -42,7 +42,7 @@
             align-items: center;
             gap: 20px;
             padding: 20px;
-            padding-top: 40px; /* Spazio extra in alto per i controlli della prima pagina */
+            padding-top: 40px;
         }
 
         .page-wrapper {
@@ -100,7 +100,7 @@
             z-index: 5;
         }
 
-        /* Nuvolette: sempre tema chiaro */
+        /* Nuvolette sempre chiare */
         #floating-toolbar, #add-page-menu {
             display: none;
             position: absolute;
@@ -248,12 +248,10 @@
         </div>
 
         <div id="workspace" class="hidden flex-grow flex flex-col bg-gray-200 dark:bg-gray-800 rounded-3xl overflow-hidden shadow-inner border border-gray-300 dark:border-gray-700 relative">
-            <div id="pdf-container" class="flex-grow w-full">
-            </div>
+            <div id="pdf-container" class="flex-grow w-full"></div>
         </div>
     </main>
 
-    <!-- Floating Toolbar per il Testo -->
     <div id="floating-toolbar" class="flex">
         <select id="tool-font" class="toolbar-select w-32" title="Font Family">
             <option value="Helvetica">Helvetica</option>
@@ -261,13 +259,12 @@
             <option value="Courier">Courier</option>
         </select>
         <input type="number" id="tool-size" class="toolbar-input w-16" value="12" title="Font Size">
-        <div class="h-6 w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
-        <button class="toolbar-btn font-bold text-gray-800 dark:text-gray-100" id="tool-bold" title="Bold">B</button>
-        <button class="toolbar-btn italic text-gray-800 dark:text-gray-100" id="tool-italic" title="Italic">I</button>
-        <button class="toolbar-btn underline text-gray-800 dark:text-gray-100" id="tool-underline" title="Underline">U</button>
+        <div class="h-6 w-px bg-gray-300 mx-1"></div>
+        <button class="toolbar-btn font-bold" id="tool-bold" title="Bold">B</button>
+        <button class="toolbar-btn italic" id="tool-italic" title="Italic">I</button>
+        <button class="toolbar-btn underline" id="tool-underline" title="Underline">U</button>
     </div>
 
-    <!-- Nuvoletta (Menu) per Aggiungere Pagina -->
     <div id="add-page-menu" class="flex">
         <button id="btn-add-blank" class="menu-btn">
             <i class="ph ph-file-plus"></i> Blank Page
@@ -277,7 +274,6 @@
         </button>
     </div>
 
-    <!-- Bottom Actions -->
     <footer id="bottom-actions" class="bg-white dark:bg-darkSurface shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] py-4 px-6 hidden">
         <div class="max-w-7xl mx-auto flex justify-end gap-4">
             <button id="btn-reset" class="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium transition-colors shadow-md">
@@ -319,7 +315,6 @@
         const btnAddBlank = document.getElementById('btn-add-blank');
         const btnAddCopy = document.getElementById('btn-add-copy');
 
-        // Events
         dropzone.addEventListener('click', () => fileInput.click());
         dropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -344,7 +339,7 @@
         });
 
         document.querySelectorAll('.align-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', () => {
                 globalAlign = btn.dataset.align;
                 document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('text-primary'));
                 btn.classList.add('text-primary');
@@ -360,7 +355,6 @@
 
         document.getElementById('btn-save').addEventListener('click', async () => await saveModifiedPdf());
 
-        // Azioni del menu Pagina
         btnAddBlank.addEventListener('click', () => {
             addPageMenu.style.display = 'none';
             if (activeWrapperForMenu) addBlankPage(activeWrapperForMenu);
@@ -494,7 +488,6 @@
             setTimeout(() => span.focus(), 50);
         }
 
-        // Funzione per inserire pagina sotto (usando .after())
         function addBlankPage(afterWrapper) {
             let width = 595.28; 
             let height = 841.89; 
@@ -542,18 +535,13 @@
             });
             wrapper.appendChild(textLayerDiv);
 
-            // Inserisci ESATTAMENTE sotto la pagina corrente
-            if (afterWrapper) {
-                afterWrapper.after(wrapper);
-            } else {
-                pdfContainer.appendChild(wrapper);
-            }
+            if (afterWrapper) afterWrapper.after(wrapper);
+            else pdfContainer.appendChild(wrapper);
             
             attachPageControlEvents(wrapper);
             wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        // Funzione per Duplicare una Pagina
         function duplicatePage(sourceWrapper) {
             const width = parseFloat(sourceWrapper.dataset.pdfWidth);
             const height = parseFloat(sourceWrapper.dataset.pdfHeight);
@@ -565,7 +553,6 @@
             newWrapper.style.width = `${scaledWidth}px`;
             newWrapper.style.height = `${scaledHeight}px`;
             
-            // Copia i dati cruciali affinché venga salvata la pagina giusta
             newWrapper.dataset.originalIndex = sourceWrapper.dataset.originalIndex || '';
             newWrapper.dataset.isNew = sourceWrapper.dataset.isNew;
             newWrapper.dataset.pdfWidth = width;
@@ -579,7 +566,6 @@
             `;
             newWrapper.appendChild(controls);
 
-            // Clona il Canvas (l'immagine di sfondo)
             const sourceCanvas = sourceWrapper.querySelector('canvas');
             const newCanvas = document.createElement('canvas');
             newCanvas.width = scaledWidth;
@@ -588,7 +574,6 @@
             ctx.drawImage(sourceCanvas, 0, 0);
             newWrapper.appendChild(newCanvas);
 
-            // Clona il Text Layer e tutti i testi
             const sourceTextLayer = sourceWrapper.querySelector('.text-layer');
             const newTextLayer = document.createElement('div');
             newTextLayer.className = 'text-layer';
@@ -602,25 +587,18 @@
             const sourceSpans = sourceTextLayer.querySelectorAll('span');
             sourceSpans.forEach(span => {
                 const newSpan = document.createElement('span');
-                newSpan.innerHTML = span.innerHTML; 
+                newSpan.innerHTML = span.innerHTML;
                 newSpan.className = span.className;
-                newSpan.style.cssText = span.style.cssText; // Copia tutti gli stili inline (posizione, colore)
-                
-                // Copia i data-attributes
+                newSpan.style.cssText = span.style.cssText;
                 Object.assign(newSpan.dataset, span.dataset);
-                
                 newSpan.setAttribute('contenteditable', 'true');
                 newSpan.addEventListener('focus', handleTextFocus);
                 newSpan.addEventListener('blur', handleTextBlur);
-                
                 newTextLayer.appendChild(newSpan);
             });
 
             newWrapper.appendChild(newTextLayer);
-
-            // Inserisce esattamente SOTTO la pagina sorgente
             sourceWrapper.after(newWrapper);
-            
             attachPageControlEvents(newWrapper);
             newWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -630,11 +608,9 @@
                 if(confirm('Delete this page?')) wrapper.remove();
             });
             wrapper.querySelector('.add-page-btn').addEventListener('click', (e) => {
-                // Mostra il menu a tendina
                 activeWrapperForMenu = wrapper;
                 const rect = e.target.closest('button').getBoundingClientRect();
                 addPageMenu.style.display = 'flex';
-                // Posiziona il menu vicino al pulsante
                 addPageMenu.style.top = `${rect.bottom + window.scrollY + 5}px`;
                 addPageMenu.style.left = `${rect.left + window.scrollX}px`;
             });
@@ -679,7 +655,7 @@
             toolSize.value = parseInt(style.fontSize);
             if(style.fontFamily.toLowerCase().includes('times')) toolFont.value = 'Times-Roman';
             else if(style.fontFamily.toLowerCase().includes('courier')) toolFont.value = 'Courier';
-            else toolFont.value = 'Helvetica'; 
+            else toolFont.value = 'Helvetica';
         }
 
         function handleTextBlur(e) {
@@ -693,11 +669,8 @@
                     span.innerHTML = '&nbsp;'; 
                     span.style.color = 'transparent';
                     span.style.backgroundColor = 'transparent';
-                    if (span.dataset.isNewlyCreated !== 'true') {
-                        span.classList.add('text-modified'); 
-                    } else {
-                        span.remove(); 
-                    }
+                    if (span.dataset.isNewlyCreated !== 'true') span.classList.add('text-modified');
+                    else span.remove();
                 } else {
                     span.style.color = 'black';
                 }
@@ -718,16 +691,13 @@
             floatingToolbar.style.left = `${leftPos}px`;
         }
 
-        // Nasconde toolbar e menu se si clicca fuori
         document.addEventListener('mousedown', (e) => {
-            // Nascondi Toolbar font
             if(floatingToolbar.style.display === 'flex') {
                 if(!floatingToolbar.contains(e.target) && (!activeTextElement || !activeTextElement.contains(e.target))) {
                     floatingToolbar.style.display = 'none';
                     activeTextElement = null;
                 }
             }
-            // Nascondi Menu "Add Page"
             if(addPageMenu.style.display === 'flex') {
                 if(!addPageMenu.contains(e.target) && !e.target.closest('.add-page-btn')) {
                     addPageMenu.style.display = 'none';
@@ -738,7 +708,33 @@
         toolFont.addEventListener('change', (e) => { if(activeTextElement) activeTextElement.style.fontFamily = e.target.value; });
         toolSize.addEventListener('input', (e) => { if(activeTextElement) activeTextElement.style.fontSize = `${e.target.value}px`; });
 
+        // ✅ FIX SALVATAGGIO:
+        // 1) Usiamo coordinate basate su offsetLeft/offsetTop (più stabili di getBoundingClientRect)
+        // 2) pulizia font-family da virgolette/fallback
+        // 3) escape testo non sicuro e gestione righe multiple
+        // 4) try/catch per singolo span così un errore non blocca tutto il salvataggio
+        function sanitizeFontName(fontName) {
+            if (!fontName) return 'Helvetica';
+            const first = fontName.split(',')[0].replace(/["']/g, '').trim().toLowerCase();
+            if (first.includes('times')) return 'Times-Roman';
+            if (first.includes('courier')) return 'Courier';
+            return 'Helvetica';
+        }
+
+        function normalizeTextForPdf(text) {
+            if (!text) return '';
+            return text
+                .replace(/\u00A0/g, ' ')
+                .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+                .replace(/\r/g, '');
+        }
+
         async function saveModifiedPdf() {
+            if (!originalPdfBytes) {
+                alert("No PDF loaded.");
+                return;
+            }
+
             try {
                 const sourcePdf = await PDFLib.PDFDocument.load(originalPdfBytes);
                 const newPdf = await PDFLib.PDFDocument.create();
@@ -748,10 +744,9 @@
                 const fontCourier = await newPdf.embedFont(PDFLib.StandardFonts.Courier);
 
                 const getFont = (name) => {
-                    if(!name) return fontHelvetica;
-                    const lName = name.toLowerCase();
-                    if(lName.includes('times')) return fontTimes;
-                    if(lName.includes('courier')) return fontCourier;
+                    const cleaned = sanitizeFontName(name);
+                    if (cleaned === 'Times-Roman') return fontTimes;
+                    if (cleaned === 'Courier') return fontCourier;
                     return fontHelvetica;
                 };
 
@@ -762,11 +757,12 @@
                     let pageLib;
                     
                     if (wrapper.dataset.isNew === 'true') {
-                        const w = parseFloat(wrapper.dataset.pdfWidth);
-                        const h = parseFloat(wrapper.dataset.pdfHeight);
+                        const w = parseFloat(wrapper.dataset.pdfWidth) || 595.28;
+                        const h = parseFloat(wrapper.dataset.pdfHeight) || 841.89;
                         pageLib = newPdf.addPage([w, h]);
                     } else {
-                        const origIndex = parseInt(wrapper.dataset.originalIndex);
+                        const origIndex = parseInt(wrapper.dataset.originalIndex, 10);
+                        if (Number.isNaN(origIndex)) continue;
                         const [copiedPage] = await newPdf.copyPages(sourcePdf, [origIndex]);
                         newPdf.addPage(copiedPage);
                         pageLib = newPdf.getPage(newPdf.getPageCount() - 1);
@@ -774,55 +770,68 @@
 
                     const pageHeight = pageLib.getHeight();
                     const spans = wrapper.querySelectorAll('.text-layer > span');
-                    
-                    spans.forEach(span => {
-                        let currentText = span.textContent.replace(/\n/g, '').trim();
-                        if(currentText === '\u00A0' || currentText === '') currentText = '';
-                        const originalText = span.dataset.originalText ? span.dataset.originalText.replace(/\n/g, '').trim() : '';
 
-                        if (currentText !== originalText || span.dataset.isNewlyCreated === 'true') {
-                            const canvasScale = currentScale; 
-                            const rect = span.getBoundingClientRect();
-                            const parentRect = wrapper.getBoundingClientRect();
-                            
-                            const x = (rect.left - parentRect.left) / canvasScale;
-                            const yHtml = (rect.top - parentRect.top) / canvasScale;
-                            const width = rect.width / canvasScale;
-                            const height = rect.height / canvasScale;
+                    spans.forEach(span => {
+                        try {
+                            let currentText = normalizeTextForPdf((span.textContent || '').trim());
+                            const originalText = normalizeTextForPdf((span.dataset.originalText || '').trim());
+
+                            if (currentText === '\u00A0') currentText = '';
+                            const changed = (currentText !== originalText) || (span.dataset.isNewlyCreated === 'true');
+                            if (!changed) return;
+
+                            const x = span.offsetLeft / currentScale;
+                            const yHtml = span.offsetTop / currentScale;
+
+                            const widthPx = span.offsetWidth || parseFloat(span.style.width) || 0;
+                            const heightPx = span.offsetHeight || parseFloat(span.style.height) || 0;
+                            const width = widthPx / currentScale;
+                            const height = heightPx / currentScale;
+
                             const yPdf = pageHeight - yHtml - height;
 
-                            if (span.dataset.isNewlyCreated !== 'true') {
+                            if (span.dataset.isNewlyCreated !== 'true' && width > 0 && height > 0) {
                                 pageLib.drawRectangle({
-                                    x: x - 2, 
-                                    y: yPdf - 2, 
-                                    width: width + 4, 
-                                    height: height + 6,
+                                    x: Math.max(0, x - 1),
+                                    y: Math.max(0, yPdf - 1),
+                                    width: width + 2,
+                                    height: height + 2,
                                     color: PDFLib.rgb(1, 1, 1),
                                 });
                             }
 
                             if (currentText !== '') {
-                                const rawFontSize = span.style.fontSize || span.dataset.fontSize || '12';
-                                const scaledFontSize = parseInt(rawFontSize.replace('px', ''));
-                                
-                                pageLib.drawText(currentText, {
-                                    x: x, 
-                                    y: yPdf + 2, 
-                                    size: scaledFontSize / canvasScale,
-                                    font: getFont(span.dataset.fontFamily),
-                                    color: PDFLib.rgb(0, 0, 0),
+                                const rawFontSize = span.style.fontSize || span.dataset.fontSize || '12px';
+                                const pxSize = parseFloat(String(rawFontSize).replace('px', '')) || 12;
+                                const finalSize = Math.max(4, pxSize / currentScale);
+
+                                const lines = currentText.split('\n').map(l => l.trimEnd());
+                                const lineHeight = finalSize * 1.2;
+                                const font = getFont(span.style.fontFamily || span.dataset.fontFamily);
+
+                                lines.forEach((line, idx) => {
+                                    if (!line) return;
+                                    pageLib.drawText(line, {
+                                        x: x,
+                                        y: yPdf + Math.max(0, (lines.length - 1 - idx) * lineHeight),
+                                        size: finalSize,
+                                        font,
+                                        color: PDFLib.rgb(0, 0, 0),
+                                    });
                                 });
                             }
+                        } catch (spanError) {
+                            console.warn('Skip span due to draw error:', spanError, span);
                         }
                     });
                 }
 
-                const pdfBytes = await newPdf.save();
+                const pdfBytes = await newPdf.save({ useObjectStreams: false });
                 const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                const newName = fileName.replace('.pdf', '') + '_changed.pdf';
+                const newName = fileName.replace(/\.pdf$/i, '') + '_changed.pdf';
                 a.download = newName;
                 document.body.appendChild(a);
                 a.click();
@@ -831,7 +840,7 @@
 
             } catch (error) {
                 console.error("Save error:", error);
-                alert("An error occurred while saving.");
+                alert("An error occurred while saving.\n\nDetails: " + (error?.message || error));
             }
         }
     </script>
