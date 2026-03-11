@@ -39,14 +39,15 @@
             <button id="btnUnderline" class="btn">U</button>
           </div>
 
-          <hr />
-
+          <hr/>
           <button id="btnBlankPage" class="btn">Blank Page</button>
           <button id="btnDuplicatePage" class="btn">Duplicate Page</button>
         </aside>
 
         <section class="canvas-area">
-          <canvas id="pdfCanvas"></canvas>
+          <div id="canvasStack" class="canvas-stack">
+            <canvas id="pdfCanvas"></canvas>
+          </div>
         </section>
       </section>
     </main>
@@ -62,11 +63,10 @@
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = "./vendor/pdfjs/pdf.worker.min.js";
   </script>
-  <script src="./vendor/pdflib/pdf-lib.min.js"></script>
   <script src="./vendor/fabric/fabric.min.js"></script>
   <script src="./vendor/jspdf/jspdf.umd.min.js"></script>
+  <script src="./vendor/pdflib/pdf-lib.min.js"></script>
 
-  <!-- App -->
   <script type="module" src="./assets/js/app.js"></script>
 </body>
 </html>

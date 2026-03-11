@@ -6,5 +6,26 @@
 .editor { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
 .toolbar { border: 1px solid #eee; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
 .canvas-area { border: 1px solid #eee; border-radius: 12px; padding: 12px; overflow: auto; }
-#pdfCanvas { max-width: 100%; border: 1px solid #ddd; }
+
+.canvas-stack {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+#pdfCanvas {
+  display: block;
+  border: 1px solid #ddd;
+  position: relative;
+  z-index: 1;
+}
+
+.text-overlay-canvas {
+  position: absolute !important;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  pointer-events: auto;
+}
+
 .style-actions { display: flex; gap: 8px; }

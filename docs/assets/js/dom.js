@@ -12,4 +12,5 @@ export const dom = {
   btnSavePdf: document.getElementById("btnSavePdf"),
   fontFamily: document.getElementById("fontFamily"),
   pdfCanvas: document.getElementById("pdfCanvas"),
+  canvasStack: document.getElementById("canvasStack"),
 };
