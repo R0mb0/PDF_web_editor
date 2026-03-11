@@ -1,0 +1,8 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+.hidden { display: none !important; }
+.btn { cursor: pointer; border: 1px solid #ccc; background: #fff; padding: 8px 12px; border-radius: 8px; }
+.btn:hover { opacity: 0.9; }
+.btn.primary { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+.btn.success { background: #1a7f37; color: #fff; border-color: #1a7f37; }
+.btn.danger { background: #cf222e; color: #fff; border-color: #cf222e; }
