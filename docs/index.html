@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Change PDF Text</title>
 
+  <!-- Applica subito tema sistema (evita flash) -->
+  <script>
+    (function () {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark) document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+    })();
+  </script>
+
   <!-- Utility CSS locale (fondamentale per classi tipo flex/bg/rounded/hidden/...) -->
   <link rel="stylesheet" href="./assets/libs/tailwind/tailwind.min.css" />
 
