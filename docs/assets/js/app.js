@@ -1,4 +1,3 @@
-pdfjsLib.GlobalWorkerOptions.workerSrc = "./assets/libs/pdfjs/pdf.worker.min.js";
 
         let originalPdfBytes = null;
         let pdfDoc = null;
