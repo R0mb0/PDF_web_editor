@@ -1,4 +1,23 @@
 /* Custom Styles */
+
+        :root {
+        --app-bg: #f9fafb;
+        --app-text: #111827;
+        --surface: #ffffff;
+        --surface-2: #e5e7eb;
+        }
+        .dark {
+        --app-bg: #111827;
+        --app-text: #f3f4f6;
+        --surface: #1f2937;
+        --surface-2: #374151;
+        }
+
+        html, body {
+        background-color: var(--app-bg);
+        color: var(--app-text);
+        }
+
         #pdf-container {
             position: relative;
             background-color: #525659;
