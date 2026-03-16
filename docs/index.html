@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Change PDF Text</title>
+
+  <!-- Librerie locali (no CDN) -->
+  <link rel="stylesheet" href="./assets/libs/fontawesome/css/all.min.css" />
+
+  <!-- Stili app -->
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body class="bg-gray-50 dark:bg-darkBg text-gray-900 dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+    <header class="bg-white dark:bg-darkSurface shadow-md py-4 px-6 z-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <h1 class="text-2xl font-bold tracking-tight text-primary">Change PDF Text</h1>
+            
+            <div id="global-tools" class="flex items-center gap-4 bg-gray-100 dark:bg-gray-800 p-2 rounded-xl opacity-50 pointer-events-none transition-opacity">
+                <div class="flex items-center bg-white dark:bg-gray-700 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 overflow-hidden">
+                    <button id="zoom-out" class="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-600 border-r border-gray-200 dark:border-gray-600"><i class="ph ph-minus"></i></button>
+                    <input type="text" id="zoom-input" value="100%" class="w-16 text-center bg-transparent border-none focus:outline-none text-sm font-medium" />
+                    <button id="zoom-in" class="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-600 border-l border-gray-200 dark:border-gray-600"><i class="ph ph-plus"></i></button>
+                </div>
+
+                <div class="flex items-center bg-white dark:bg-gray-700 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 overflow-hidden">
+                    <button class="align-btn text-primary px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-600 border-r border-gray-200 dark:border-gray-600" data-align="left" title="Left"><i class="ph ph-text-align-left"></i></button>
+                    <button class="align-btn px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-600 border-r border-gray-200 dark:border-gray-600" data-align="center" title="Center"><i class="ph ph-text-align-center"></i></button>
+                    <button class="align-btn px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-600" data-align="right" title="Right"><i class="ph ph-text-align-right"></i></button>
+                </div>
+                
+                <div class="text-xs text-gray-500 dark:text-gray-400 ml-2 hidden md:block">
+                    <i class="ph ph-info"></i> Double-click to add text
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col p-6 max-w-7xl mx-auto w-full relative">
+        <div id="dropzone" class="flex-grow border-4 border-dashed border-gray-300 dark:border-gray-600 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:border-primary dark:hover:border-primary transition-colors bg-white dark:bg-darkSurface shadow-sm">
+            <i class="ph ph-file-pdf text-6xl text-gray-400 dark:text-gray-500 mb-4"></i>
+            <h2 class="text-xl font-semibold mb-2">Drag and drop your PDF here</h2>
+            <p class="text-gray-500 dark:text-gray-400 mb-4">or click to browse your computer</p>
+            <input type="file" id="file-input" class="hidden" accept="application/pdf" />
+            <button class="bg-primary hover:bg-blue-600 text-white px-6 py-2 rounded-full font-medium transition-colors shadow-md pointer-events-none">
+                Select File
+            </button>
+        </div>
+
+        <div id="workspace" class="hidden flex-grow flex flex-col bg-gray-200 dark:bg-gray-800 rounded-3xl overflow-hidden shadow-inner border border-gray-300 dark:border-gray-700 relative">
+            <div id="pdf-container" class="flex-grow w-full"></div>
+        </div>
+    </main>
+
+    <div id="floating-toolbar" class="flex">
+        <select id="tool-font" class="toolbar-select w-32" title="Font Family">
+            <option value="Helvetica">Helvetica</option>
+            <option value="Times-Roman">Times New Roman</option>
+            <option value="Courier">Courier</option>
+        </select>
+        <input type="number" id="tool-size" class="toolbar-input w-16" value="12" title="Font Size">
+        <div class="h-6 w-px bg-gray-300 mx-1"></div>
+        <button class="toolbar-btn font-bold" id="tool-bold" title="Bold">B</button>
+        <button class="toolbar-btn italic" id="tool-italic" title="Italic">I</button>
+        <button class="toolbar-btn underline" id="tool-underline" title="Underline">U</button>
+    </div>
+
+    <div id="add-page-menu" class="flex">
+        <button id="btn-add-blank" class="menu-btn">
+            <i class="ph ph-file-plus"></i> Blank Page
+        </button>
+        <button id="btn-add-copy" class="menu-btn">
+            <i class="ph ph-copy"></i> Duplicate Page
+        </button>
+    </div>
+
+    <footer id="bottom-actions" class="bg-white dark:bg-darkSurface shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] py-4 px-6 hidden">
+        <div class="max-w-7xl mx-auto flex justify-end gap-4">
+            <button id="btn-reset" class="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium transition-colors shadow-md">
+                <i class="ph ph-arrow-counter-clockwise"></i> Reset
+            </button>
+            <button id="btn-save" class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-medium transition-colors shadow-md">
+                <i class="ph ph-floppy-disk"></i> Save PDF
+            </button>
+        </div>
+    </footer>
+
+  <!-- Librerie locali (ordine importante) -->
+  <script src="./assets/libs/pdf-lib/pdf-lib.min.js"></script>
+  <script src="./assets/libs/pdfjs/pdf.min.js"></script>
+  <script src="./assets/libs/interact/interact.min.js"></script>
+
+  <!-- Init librerie locali -->
+  <script src="./assets/js/vendor-init.js"></script>
+
+  <!-- Script app -->
+  <script src="./assets/js/app.js"></script>
+</body>
+</html>
