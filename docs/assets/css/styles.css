@@ -174,3 +174,6 @@
             margin-bottom: 5px;
         }
         .tooltip:hover::after { opacity: 1; }
+        body {
+            padding-bottom: 120px; /* Lascia spazio per il banner sticky di A-Ads */
+        }
